@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { useState, useEffect } from 'react'
 import '../assets/css/Timer.css'
+import { Button } from '@material-ui/core'
 
 const Timer: React.FC = () => {
 
@@ -16,6 +17,7 @@ const Timer: React.FC = () => {
         }
     }, [state, count])
 
+    // functions
     const update = () => {
         const hour = toHours(state.time)
         const minute = toMinutes(state.time)
@@ -52,13 +54,15 @@ const Timer: React.FC = () => {
     // render
     return (
         <div className="timer-container">
-            <span className="timer-number" role="hour">{state.hour}</span>
-            <span className="timer-semicolon">:</span>
-            <span className="timer-number" role="minute">{state.minute}</span>
-            <span className="timer-semicolon">:</span>
-            <span className="timer-number" role="second">{state.second}</span>
             <div>
-                <button onClick={toggleTimer}>{!count ? "start" : "stop"}</button>
+                <span className="timer-number" role="hour">{state.hour}</span>
+                <span className="timer-semicolon">:</span>
+                <span className="timer-number" role="minute">{state.minute}</span>
+                <span className="timer-semicolon">:</span>
+                <span className="timer-number" role="second">{state.second}</span>
+            </div>
+            <div>
+                <Button variant="contained" onClick={toggleTimer}>{!count ? "start" : "stop"}</Button>
             </div>
         </div>
     )
