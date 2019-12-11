@@ -4,9 +4,11 @@ import '../assets/css/Timer.css'
 
 const Timer: React.FC = () => {
 
+    // state
     const [state, setState] = useState({ time: 0, hour: "00", minute: "00", second: "00" })
     const [count, setCount] = useState(false)
 
+    // lifecycle
     useEffect(() => {
         if (count) {
             const intervalTimer = setInterval(update, 1000)
