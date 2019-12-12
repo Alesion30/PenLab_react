@@ -2,20 +2,29 @@ import * as React from 'react'
 import { useState, useEffect } from 'react'
 import '../assets/css/Timer.css'
 import { Button } from '@material-ui/core'
+import axios from 'axios';
 
 const Timer: React.FC = () => {
 
     // state
     const [state, setState] = useState({ time: 0, hour: "00", minute: "00", second: "00" })
     const [count, setCount] = useState(false)
+    const [start, setStart] = useState(false)
 
     // lifecycle
     useEffect(() => {
         if (count) {
-            const intervalTimer = setInterval(update, 1000)
-            return () => clearInterval(intervalTimer)
+            const timer = setInterval(update, 1000)
+            return () => clearInterval(timer)
         }
     }, [state, count])
+
+    useEffect(() => {
+        if (start) {
+            const watcher = setInterval(watchApi, 3000)
+            return () => clearInterval(watcher)
+        }
+    }, [start])
 
     // functions
     const update = () => {
@@ -29,6 +38,19 @@ const Timer: React.FC = () => {
             minute: toText(minute),
             second: toText(second)
         })
+    }
+
+    const watchApi = async () => {
+        const result = await axios(
+            'http://hn.algolia.com/api/v1/search?query=redux',
+        );
+        console.log(result.data.nbHits)
+
+        if (result.data.nbHits > 12000) {
+            setCount(false)
+        } else {
+            setCount(true)
+        }
     }
 
     const toHours = (time: number) => {
@@ -51,6 +73,10 @@ const Timer: React.FC = () => {
         setCount(!count)
     }
 
+    const toggleWatcher = () => {
+        setStart(!start)
+    }
+
     // render
     return (
         <div className="timer-container">
@@ -61,8 +87,13 @@ const Timer: React.FC = () => {
                 <span className="timer-semicolon">:</span>
                 <span className="timer-number" role="second">{state.second}</span>
             </div>
-            <div>
+            <div style={{ marginTop: 30 }}>
+                <span style={{ marginRight: 10 }}>Timer</span>
                 <Button variant="contained" onClick={toggleTimer}>{!count ? "start" : "stop"}</Button>
+            </div>
+            <div style={{ marginTop: 10 }}>
+                <span style={{ marginRight: 10 }}>API</span>
+                <Button variant="contained" onClick={toggleWatcher}>{!start ? "start" : "stop"}</Button>
             </div>
         </div>
     )
