@@ -1,8 +1,9 @@
-import * as React from 'react'
-import { useState, useEffect } from 'react'
-import '../assets/css/Timer.css'
 import { Button } from '@material-ui/core'
 import axios from 'axios';
+import * as firebase from "firebase";
+import * as React from 'react'
+import { useEffect, useState } from 'react'
+import '../assets/css/Timer.css'
 
 const Timer: React.FC = () => {
 
@@ -10,8 +11,23 @@ const Timer: React.FC = () => {
     const [state, setState] = useState({ time: 0, hour: "00", minute: "00", second: "00" })
     const [count, setCount] = useState(false)
     const [start, setStart] = useState(false)
+    const [data, setData] = useState(0)
 
     // lifecycle
+    useEffect(() => {
+        const db = firebase.firestore()
+        db.collection("test")
+            .doc("1")
+            .get()
+            .then((doc) => {
+                if (doc.exists) {
+                    console.log("Document data:", doc.data());
+                } else {
+                    console.log("No such document!");
+                }
+            })
+    }, [])
+
     useEffect(() => {
         if (count) {
             const timer = setInterval(update, 1000)
@@ -21,7 +37,7 @@ const Timer: React.FC = () => {
 
     useEffect(() => {
         if (start) {
-            const watcher = setInterval(watchApi, 3000)
+            const watcher = setInterval(getAPI, 1000)
             return () => clearInterval(watcher)
         }
     }, [start])
@@ -40,17 +56,18 @@ const Timer: React.FC = () => {
         })
     }
 
-    const watchApi = async () => {
+    const getAPI = async () => {
         const result = await axios(
             'http://hn.algolia.com/api/v1/search?query=redux',
         );
         console.log(result.data.nbHits)
 
-        if (result.data.nbHits > 12000) {
+        if (result.data.nbHits < 12000) {
             setCount(false)
         } else {
             setCount(true)
         }
+        setData(result.data.nbHits)
     }
 
     const toHours = (time: number) => {
@@ -69,17 +86,16 @@ const Timer: React.FC = () => {
         return ('00' + time).slice(-2)
     }
 
-    const toggleTimer = () => {
-        setCount(!count)
-    }
-
     const toggleWatcher = () => {
         setStart(!start)
+        setCount(false)
+        setData(0)
     }
 
     // render
     return (
         <div className="timer-container">
+            <h2>現在のセンサの値： {data}</h2>
             <div>
                 <span className="timer-number" role="hour">{state.hour}</span>
                 <span className="timer-semicolon">:</span>
@@ -87,12 +103,7 @@ const Timer: React.FC = () => {
                 <span className="timer-semicolon">:</span>
                 <span className="timer-number" role="second">{state.second}</span>
             </div>
-            <div style={{ marginTop: 30 }}>
-                <span style={{ marginRight: 10 }}>Timer</span>
-                <Button variant="contained" onClick={toggleTimer}>{!count ? "start" : "stop"}</Button>
-            </div>
             <div style={{ marginTop: 10 }}>
-                <span style={{ marginRight: 10 }}>API</span>
                 <Button variant="contained" onClick={toggleWatcher}>{!start ? "start" : "stop"}</Button>
             </div>
         </div>
