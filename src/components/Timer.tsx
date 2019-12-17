@@ -17,81 +17,90 @@ const Timer: React.FC = () => {
     useEffect(() => {
         const today = new Date()
         const db = firebase.firestore()
-        db.collection("data")
-            .doc(`${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`)
-            .get()
-            .then((doc) => {
-                const dt = doc.data()
-                if (dt !== undefined) {
-                    const t = parseInt(dt.time, 10)
-                    const hour = toHours(t)
-                    const minute = toMinutes(t)
-                    const second = toSeconds(t)
-                    setState({
-                        time: t,
-                        hour: toText(hour),
-                        minute: toText(minute),
-                        second: toText(second)
-                    })
-                }
-            })
+
+        const fetchData = () => {
+            db.collection("data")
+                .doc(`${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`)
+                .get()
+                .then((doc) => {
+                    const dt = doc.data()
+                    if (dt !== undefined) {
+                        const t = parseInt(dt.time, 10)
+                        const hour = toHours(t)
+                        const minute = toMinutes(t)
+                        const second = toSeconds(t)
+                        setState({
+                            time: t,
+                            hour: toText(hour),
+                            minute: toText(minute),
+                            second: toText(second)
+                        })
+                    }
+                })
+        }
+
+        fetchData()
     }, [])
 
     useEffect(() => {
         const today = new Date()
         const db = firebase.firestore()
         let timer: NodeJS.Timeout;
-        if (count) {
-            timer = setInterval(update, 1000)
+
+        const update = () => {
+            const hour = toHours(state.time)
+            const minute = toMinutes(state.time)
+            const second = toSeconds(state.time)
+
+            setState({
+                time: state.time + 1,
+                hour: toText(hour),
+                minute: toText(minute),
+                second: toText(second)
+            })
         }
-        const cleanup = async () => {
+        const saveData = async () => {
             if (state.time !== 0) {
                 await db.collection("data")
                     .doc(`${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`)
-                    .set({ time: state.time })
+                    .set({ time: state.time - 1 })
+            }
+        }
+
+        if (count) {
+            timer = setInterval(update, 1000)
+        }
+
+        return () => {
+            if (!count) {
+                saveData()
             }
             clearInterval(timer)
-        }
-        return () => {
-            cleanup()
         }
     }, [state, count])
 
     useEffect(() => {
-        if (start) {
-            const watcher = setInterval(getAPI, 1000)
-            return () => clearInterval(watcher)
+        let watcher: NodeJS.Timeout
+
+        const getAPI = async () => {
+            const result = await axios(
+                'http://hn.algolia.com/api/v1/search?query=redux',
+            );
+            if (result.data.nbHits < 12300) {
+                setCount(false)
+            } else {
+                setCount(true)
+            }
+            setData(result.data.nbHits)
         }
+
+        if (start) {
+            watcher = setInterval(getAPI, 1000)
+        }
+        return () => clearInterval(watcher)
     }, [start])
 
     // functions
-    const update = () => {
-        const hour = toHours(state.time)
-        const minute = toMinutes(state.time)
-        const second = toSeconds(state.time)
-
-        setState({
-            time: state.time + 1,
-            hour: toText(hour),
-            minute: toText(minute),
-            second: toText(second)
-        })
-    }
-
-    const getAPI = async () => {
-        const result = await axios(
-            'http://hn.algolia.com/api/v1/search?query=redux',
-        );
-        console.log(result.data.nbHits)
-
-        if (result.data.nbHits < 12300) {
-            setCount(false)
-        } else {
-            setCount(true)
-        }
-        setData(result.data.nbHits)
-    }
-
     const toHours = (time: number) => {
         return Math.floor(time / 60 / 60)
     }
