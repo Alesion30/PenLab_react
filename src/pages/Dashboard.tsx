@@ -1,8 +1,10 @@
 import * as React from 'react'
-import Graph from '../components/Graph';
+import '../assets/css/Dashboard.css'
+import Graph from '../components/Graph'
 
 const Dashborad = () => (
-    <div>
+    <div className="dashboard-container">
+        <h1>過去一週間の記録</h1>
         <Graph />
     </div>
 )

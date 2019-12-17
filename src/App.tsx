@@ -1,3 +1,5 @@
+import AccessTime from '@material-ui/icons/AccessTime';
+import DashboardRoundedIcon from '@material-ui/icons/DashboardRounded';
 import React from 'react';
 import {
   BrowserRouter as Router,
@@ -5,6 +7,7 @@ import {
   Route,
   Switch
 } from "react-router-dom";
+import './App.scss'
 import Dashborad from './pages/Dashboard';
 import Home from './pages/Home';
 
@@ -12,26 +15,22 @@ const App: React.SFC = () => {
   return (
     <Router>
       <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/about">About</Link>
-            </li>
-            <li>
-              <Link to="/dashboard">グラフ</Link>
-            </li>
-          </ul>
-        </nav>
+        <div id="nav" className="nav">
+          <div className="icon">
+            <ul>
+              <li><Link to="/"><AccessTime /></Link></li>
+              <li><Link to="/dashboard"><DashboardRoundedIcon /></Link></li>
+            </ul>
+          </div>
+          <div className="text">
+            <ul>
+              <li><Link to="/">Timer</Link></li>
+              <li><Link to="/dashboard">dashboard</Link></li>
+            </ul>
+          </div>
+        </div>
         <Switch>
-          <Route path="/about">
-            {/* <Home /> */}
-            <h1>about</h1>
-          </Route>
           <Route path="/dashboard">
-            {/* <Users /> */}
             <Dashborad />
           </Route>
           <Route path="/">

@@ -31,7 +31,7 @@ const data = {
 
 const Graph = () => {
     return (
-        <Card style={{ width: 700 }}>
+        <Card style={{ width: '85%' }}>
             <CardContent>
                 <Line data={data} />
             </CardContent>
