@@ -5,7 +5,11 @@ import * as React from 'react'
 import { useEffect, useState } from 'react'
 import '../assets/css/Timer.css'
 
-const Timer: React.FC = () => {
+interface ITimerProps {
+    value: number
+}
+
+const Timer = (props: ITimerProps) => {
 
     // state
     const [state, setState] = useState({ time: 0, hour: "00", minute: "00", second: "00" })
@@ -86,12 +90,13 @@ const Timer: React.FC = () => {
             const result = await axios(
                 'http://hn.algolia.com/api/v1/search?query=redux',
             );
-            if (result.data.nbHits < 12300) {
+            const value = parseInt(result.data.nbHits, 10)
+            if (value < props.value) {
                 setCount(false)
             } else {
                 setCount(true)
             }
-            setData(result.data.nbHits)
+            setData(value)
         }
 
         if (start) {
@@ -126,7 +131,7 @@ const Timer: React.FC = () => {
     // render
     return (
         <div className="timer-container">
-            <h2>現在のセンサの値： {data}</h2>
+            <h1>本日の勉強時間</h1>
             <div>
                 <span className="timer-number" role="hour">{state.hour}</span>
                 <span className="timer-semicolon">:</span>
@@ -137,6 +142,7 @@ const Timer: React.FC = () => {
             <div style={{ marginTop: 10 }}>
                 <Button variant="contained" onClick={toggleWatcher}>{(!start && !count) ? "start" : "stop"}</Button>
             </div>
+            <h2 style={{ position: "absolute", bottom: 30 }}>現在のセンサの値： {data}</h2>
         </div>
     )
 }

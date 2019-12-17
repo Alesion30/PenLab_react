@@ -4,7 +4,7 @@ import Timer from '../components/Timer'
 
 const Home: React.SFC = () => (
     <div className="home-container">
-        <Timer />
+        <Timer value={12300} />
     </div>
 )
 

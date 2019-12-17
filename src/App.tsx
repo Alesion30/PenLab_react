@@ -1,5 +1,6 @@
 import AccessTime from '@material-ui/icons/AccessTime';
 import DashboardRoundedIcon from '@material-ui/icons/DashboardRounded';
+import SettingsIcon from '@material-ui/icons/Settings';
 import React from 'react';
 import {
   BrowserRouter as Router,
@@ -20,18 +21,23 @@ const App: React.SFC = () => {
             <ul>
               <li><Link to="/"><AccessTime /></Link></li>
               <li><Link to="/dashboard"><DashboardRoundedIcon /></Link></li>
+              <li><Link to="/setting"><SettingsIcon /></Link></li>
             </ul>
           </div>
           <div className="text">
             <ul>
               <li><Link to="/">Timer</Link></li>
-              <li><Link to="/dashboard">dashboard</Link></li>
+              <li><Link to="/dashboard">DashBoard</Link></li>
+              <li><Link to="/setting">Setting</Link></li>
             </ul>
           </div>
         </div>
         <Switch>
           <Route path="/dashboard">
             <Dashborad />
+          </Route>
+          <Route path="/setting">
+            <h1>setting</h1>
           </Route>
           <Route path="/">
             <Home />

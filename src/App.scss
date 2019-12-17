@@ -9,11 +9,22 @@ body{
 
     & h1{
     text-align:center;
-    margin-top:35px;
-    color:hsla(0,0%,20%,1);
+    margin-top:25px;
+    font-size: 45px;
+    color: rgb(216, 216, 216);
     letter-spacing:1px;
-    text-shadow:1px 1px hsla(212, 5%, 95%, 1),
-      -1px -1px hsla(212, 5%, 95%, 1);
+    text-shadow:1px 1px rgb(36, 36, 36),
+      -1px -1px rgb(82, 82, 82);
+    }
+
+    & h2{
+    text-align:center;
+    margin-top:35px;
+    font-size: 25px;
+    color: rgb(216, 216, 216);
+    letter-spacing:1px;
+    text-shadow:1px 1px rgb(36, 36, 36),
+      -1px -1px rgb(82, 82, 82);
     }
 }
 
