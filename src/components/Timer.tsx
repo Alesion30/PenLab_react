@@ -15,23 +15,45 @@ const Timer: React.FC = () => {
 
     // lifecycle
     useEffect(() => {
+        const today = new Date()
         const db = firebase.firestore()
-        db.collection("test")
-            .doc("1")
+        db.collection("data")
+            .doc(`${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`)
             .get()
             .then((doc) => {
-                if (doc.exists) {
-                    console.log("Document data:", doc.data());
-                } else {
-                    console.log("No such document!");
+                const dt = doc.data()
+                if (dt !== undefined) {
+                    const t = parseInt(dt.time, 10)
+                    const hour = toHours(t)
+                    const minute = toMinutes(t)
+                    const second = toSeconds(t)
+                    setState({
+                        time: t,
+                        hour: toText(hour),
+                        minute: toText(minute),
+                        second: toText(second)
+                    })
                 }
             })
     }, [])
 
     useEffect(() => {
+        const today = new Date()
+        const db = firebase.firestore()
+        let timer: NodeJS.Timeout;
         if (count) {
-            const timer = setInterval(update, 1000)
-            return () => clearInterval(timer)
+            timer = setInterval(update, 1000)
+        }
+        const cleanup = async () => {
+            if (state.time !== 0) {
+                await db.collection("data")
+                    .doc(`${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`)
+                    .set({ time: state.time })
+            }
+            clearInterval(timer)
+        }
+        return () => {
+            cleanup()
         }
     }, [state, count])
 
@@ -62,7 +84,7 @@ const Timer: React.FC = () => {
         );
         console.log(result.data.nbHits)
 
-        if (result.data.nbHits < 12000) {
+        if (result.data.nbHits < 12300) {
             setCount(false)
         } else {
             setCount(true)
@@ -104,7 +126,7 @@ const Timer: React.FC = () => {
                 <span className="timer-number" role="second">{state.second}</span>
             </div>
             <div style={{ marginTop: 10 }}>
-                <Button variant="contained" onClick={toggleWatcher}>{!start ? "start" : "stop"}</Button>
+                <Button variant="contained" onClick={toggleWatcher}>{(!start && !count) ? "start" : "stop"}</Button>
             </div>
         </div>
     )
