@@ -5,6 +5,7 @@ import {
   Route,
   Switch
 } from "react-router-dom";
+import Dashborad from './pages/Dashboard';
 import Home from './pages/Home';
 
 const App: React.SFC = () => {
@@ -20,7 +21,7 @@ const App: React.SFC = () => {
               <Link to="/about">About</Link>
             </li>
             <li>
-              <Link to="/users">Users</Link>
+              <Link to="/dashboard">グラフ</Link>
             </li>
           </ul>
         </nav>
@@ -29,9 +30,9 @@ const App: React.SFC = () => {
             {/* <Home /> */}
             <h1>about</h1>
           </Route>
-          <Route path="/users">
+          <Route path="/dashboard">
             {/* <Users /> */}
-            <h1>user</h1>
+            <Dashborad />
           </Route>
           <Route path="/">
             <Home />

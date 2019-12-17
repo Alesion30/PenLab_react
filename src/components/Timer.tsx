@@ -63,7 +63,7 @@ const Timer: React.FC = () => {
             if (state.time !== 0) {
                 await db.collection("data")
                     .doc(`${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`)
-                    .set({ time: state.time - 1 })
+                    .set({ time: state.time })
             }
         }
 
