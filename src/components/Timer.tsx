@@ -6,7 +6,9 @@ import { useEffect, useState } from 'react'
 import '../assets/css/Timer.css'
 
 interface ITimerProps {
-    value: number
+    min: number
+    max: number
+    display: string
 }
 
 const Timer = (props: ITimerProps) => {
@@ -91,7 +93,7 @@ const Timer = (props: ITimerProps) => {
                 'http://hn.algolia.com/api/v1/search?query=redux',
             );
             const value = parseInt(result.data.nbHits, 10)
-            if (value < props.value) {
+            if (value >= props.min && value <= props.max) {
                 setCount(false)
             } else {
                 setCount(true)
@@ -131,7 +133,7 @@ const Timer = (props: ITimerProps) => {
     // render
     return (
         <div className="timer-container">
-            <h1>本日の勉強時間</h1>
+            <h1>{props.display}</h1>
             <div>
                 <span className="timer-number" role="hour">{state.hour}</span>
                 <span className="timer-semicolon">:</span>
