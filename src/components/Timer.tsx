@@ -89,10 +89,9 @@ const Timer = (props: ITimerProps) => {
         let watcher: NodeJS.Timeout
 
         const getAPI = async () => {
-            const result = await axios(
-                'http://hn.algolia.com/api/v1/search?query=redux',
-            );
-            const value = parseInt(result.data.nbHits, 10)
+            const result = await axios('http://localhost:3001/')
+            const value = parseInt(result.data, 10)
+            console.log("value: ", value)
             if (value >= props.min && value <= props.max) {
                 setCount(false)
             } else {
@@ -105,7 +104,7 @@ const Timer = (props: ITimerProps) => {
             watcher = setInterval(getAPI, 1000)
         }
         return () => clearInterval(watcher)
-    }, [start])
+    }, [start, props.max, props.min])
 
     // functions
     const toHours = (time: number) => {
@@ -135,11 +134,11 @@ const Timer = (props: ITimerProps) => {
         <div className="timer-container">
             <h1>{props.display}</h1>
             <div>
-                <span className="timer-number" role="hour">{state.hour}</span>
+                <span className="timer-number">{state.hour}</span>
                 <span className="timer-semicolon">:</span>
-                <span className="timer-number" role="minute">{state.minute}</span>
+                <span className="timer-number">{state.minute}</span>
                 <span className="timer-semicolon">:</span>
-                <span className="timer-number" role="second">{state.second}</span>
+                <span className="timer-number">{state.second}</span>
             </div>
             <div style={{ marginTop: 10 }}>
                 <Button variant="contained" onClick={toggleWatcher}>{(!start && !count) ? "start" : "stop"}</Button>
