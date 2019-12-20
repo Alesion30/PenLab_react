@@ -90,12 +90,13 @@ const Timer = (props: ITimerProps) => {
 
         const getAPI = async () => {
             const result = await axios('http://localhost:3001/')
-            const value = parseInt(result.data, 10)
+            console.log(result.data.data)
+            const value = parseInt(result.data.data, 10)
             console.log("value: ", value)
             if (value >= props.min && value <= props.max) {
-                setCount(false)
-            } else {
                 setCount(true)
+            } else {
+                setCount(false)
             }
             setData(value)
         }
@@ -132,7 +133,7 @@ const Timer = (props: ITimerProps) => {
     // render
     return (
         <div className="timer-container">
-            <h1>{props.display}</h1>
+            <h1>{(!count) ? props.display : "作業中"}</h1>
             <div>
                 <span className="timer-number">{state.hour}</span>
                 <span className="timer-semicolon">:</span>
