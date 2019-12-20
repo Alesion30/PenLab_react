@@ -9,7 +9,7 @@ const Home: React.SFC = () => (
         {(cMode: ModeContainer) => {
             return (
                 <div className="home-container">
-                    <Timer min={cMode.state.min} max={cMode.state.max} display={cMode.state.display} />
+                    <Timer mode={cMode.state.mode} min={cMode.state.min} max={cMode.state.max} display={cMode.state.display} />
                 </div>
             )
         }}

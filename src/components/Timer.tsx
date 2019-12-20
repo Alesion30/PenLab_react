@@ -9,6 +9,7 @@ interface ITimerProps {
     min: number
     max: number
     display: string
+    mode: string
 }
 
 const Timer = (props: ITimerProps) => {
@@ -25,7 +26,7 @@ const Timer = (props: ITimerProps) => {
         const db = firebase.firestore()
 
         const fetchData = () => {
-            db.collection("data")
+            db.collection(`mode/${props.mode}/data`)
                 .doc(`${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`)
                 .get()
                 .then((doc) => {
@@ -46,7 +47,7 @@ const Timer = (props: ITimerProps) => {
         }
 
         fetchData()
-    }, [])
+    }, [props.mode])
 
     useEffect(() => {
         const today = new Date()
@@ -67,7 +68,7 @@ const Timer = (props: ITimerProps) => {
         }
         const saveData = async () => {
             if (state.time !== 0) {
-                await db.collection("data")
+                await db.collection(`mode/${props.mode}/data`)
                     .doc(`${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`)
                     .set({ time: state.time })
             }
@@ -83,7 +84,7 @@ const Timer = (props: ITimerProps) => {
             }
             clearInterval(timer)
         }
-    }, [state, count])
+    }, [state, count, props.mode])
 
     useEffect(() => {
         let watcher: NodeJS.Timeout
@@ -130,10 +131,19 @@ const Timer = (props: ITimerProps) => {
         setData(0)
     }
 
+    let title;
+    if (!start) {
+        title = props.display
+    } else if (count) {
+        title = "タイマー作動中"
+    } else {
+        title = "タイマー停止中"
+    }
+
     // render
     return (
         <div className="timer-container">
-            <h1>{(!count) ? props.display : "作業中"}</h1>
+            <h1>{title}</h1>
             <div>
                 <span className="timer-number">{state.hour}</span>
                 <span className="timer-semicolon">:</span>

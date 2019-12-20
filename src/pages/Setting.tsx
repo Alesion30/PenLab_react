@@ -13,12 +13,20 @@ const SettingSub = (props: IProps) => {
     const [display, setDisplay] = useState(props.cMode.state.display)
     const [min, setMin] = useState(props.cMode.state.min)
     const [max, setMax] = useState(props.cMode.state.max)
+    let title;
+    if (props.cMode.state.mode === "mode1") {
+        title = "圧力センサ"
+    } else if (props.cMode.state.mode === "mode2") {
+        title = "タッチセンサ"
+    } else {
+        title = "マニュアル"
+    }
     return (
         <div>
-            <h1>現在のモード: {props.cMode.state.mode}</h1>
+            <h1>現在のモード: {title}</h1>
             <div className="setting-container">
                 <MediaCard
-                    title="mode1"
+                    title="圧力センサ"
                     explain={`圧力センサを用いて、学習時間を測定します。センサの値が${props.cMode.getMode('mode1').min}以上${props.cMode.getMode('mode1').max}以下の間でタイマーが作動します。`}
                     imgUrl="https://www.touhan-navi.com/contents/passing/img/study-img-01.jpg"
                     onClick={() => {
@@ -29,7 +37,7 @@ const SettingSub = (props: IProps) => {
                     }}
                 />
                 <MediaCard
-                    title="mode2"
+                    title="タッチセンサ"
                     explain={`タッチセンサを用いて、スマホをいじっている時間を測定します。センサの値が${props.cMode.getMode('mode2').min}以上${props.cMode.getMode('mode2').max}以下の間でタイマーが作動します。`}
                     imgUrl="https://kachi-mori.com/wp-content/uploads/2019/04/access-adult-blur-2616281.jpg"
                     onClick={() => {

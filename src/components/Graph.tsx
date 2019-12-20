@@ -4,7 +4,11 @@ import * as React from 'react'
 import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2'
 
-const Graph = () => {
+interface IProps {
+    mode: string
+}
+
+const Graph = (props: IProps) => {
     const date0 = new Date()
     const date1 = new Date()
     date1.setDate(date1.getDate() - 1);
@@ -36,7 +40,7 @@ const Graph = () => {
             let data5 = 0
             let data6 = 0
 
-            await db.collection('data').doc(formatDate(date0))
+            await db.collection(`mode/${props.mode}/data`).doc(formatDate(date0))
                 .get()
                 .then(doc => {
                     const dd = doc.data()
@@ -47,7 +51,7 @@ const Graph = () => {
                     }
                 })
 
-            await db.collection('data').doc(formatDate(date1))
+            await db.collection(`mode/${props.mode}/data`).doc(formatDate(date1))
                 .get()
                 .then(doc => {
                     const dd = doc.data()
@@ -58,7 +62,7 @@ const Graph = () => {
                     }
                 })
 
-            await db.collection('data').doc(formatDate(date2))
+            await db.collection(`mode/${props.mode}/data`).doc(formatDate(date2))
                 .get()
                 .then(doc => {
                     const dd = doc.data()
@@ -69,7 +73,7 @@ const Graph = () => {
                     }
                 })
 
-            await db.collection('data').doc(formatDate(date3))
+            await db.collection(`mode/${props.mode}/data`).doc(formatDate(date3))
                 .get()
                 .then(doc => {
                     const dd = doc.data()
@@ -80,7 +84,7 @@ const Graph = () => {
                     }
                 })
 
-            await db.collection('data').doc(formatDate(date4))
+            await db.collection(`mode/${props.mode}/data`).doc(formatDate(date4))
                 .get()
                 .then(doc => {
                     const dd = doc.data()
@@ -91,7 +95,7 @@ const Graph = () => {
                     }
                 })
 
-            await db.collection('data').doc(formatDate(date5))
+            await db.collection(`mode/${props.mode}/data`).doc(formatDate(date5))
                 .get()
                 .then(doc => {
                     const dd = doc.data()
@@ -102,7 +106,7 @@ const Graph = () => {
                     }
                 })
 
-            await db.collection('data').doc(formatDate(date6))
+            await db.collection(`mode/${props.mode}/data`).doc(formatDate(date6))
                 .get()
                 .then(doc => {
                     const dd = doc.data()
@@ -117,7 +121,7 @@ const Graph = () => {
             setDatas(datasSub)
         }
         getData()
-    }, [])
+    }, [date0, date1, date2, date3, date4, date5, date6, props.mode])
 
     const data = {
         labels: [formatDate(date6), formatDate(date5), formatDate(date4), formatDate(date3), formatDate(date2), formatDate(date1), formatDate(date0)],
@@ -146,13 +150,36 @@ const Graph = () => {
         ]
     }
 
-    return (
-        <Card style={{ width: '85%' }}>
-            <CardContent>
-                <Line data={data} />
-            </CardContent>
-        </Card>
+    const options: object = {
+        responsive: true,
+        scales: {
+            yAxes: [{
+                display: true,
+                ticks: {
+                    min: 0
+                }
+            }],
+        },
+    }
 
+    const [show, setShow] = useState(false)
+    useEffect(() => {
+        setTimeout(() => { setShow(true) }, 3000);
+    }, [])
+
+    if (!show) {
+        return <h1 style={{ marginTop: 300 }}>しばらくお待ちください</h1>
+    }
+
+    return (
+        <>
+            <h1>過去一週間の記録</h1>
+            <Card style={{ width: '85%' }}>
+                <CardContent>
+                    <Line data={data} options={options} />
+                </CardContent>
+            </Card>
+        </>
     )
 }
 

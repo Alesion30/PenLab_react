@@ -13,8 +13,8 @@ export default class ModeContainer extends Container<IState> {
         this.state = {
             mode: "mode1",
             display: "本日の勉強時間",
-            min: 200,
-            max: 3000
+            min: 180,
+            max: 1000
         }
     }
 
@@ -24,14 +24,14 @@ export default class ModeContainer extends Container<IState> {
                 return {
                     mode,
                     display: "本日の勉強時間",
-                    min: 200,
-                    max: 3000
+                    min: 180,
+                    max: 1000
                 }
             case 'mode2':
                 return {
                     mode,
                     display: "本日のスマホ時間",
-                    min: 500,
+                    min: 100,
                     max: 1000
                 }
             default:
